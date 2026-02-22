@@ -27,7 +27,6 @@ async def seed_database(db: AsyncSession) -> bool:
                 role="Admin",
                 is_superuser=True,
                 is_active=True,
-                # Обов'язкові поля, які були None
                 first_name="Admin",  
                 last_name="Super"
             )
@@ -46,7 +45,6 @@ async def seed_database(db: AsyncSession) -> bool:
                 first_name="Leonardo", 
                 last_name="DiCaprio", 
                 photo_url="https://image.tmdb.org/t/p/w500/lrsfP0BT96veSBrnuMsSTvi8Dvi.jpg",
-                biography="American actor and film producer." # Додано для уникнення null
             ))
 
         res_hall = await db.execute(select(CinemaHall).limit(1))
