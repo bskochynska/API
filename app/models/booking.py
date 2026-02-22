@@ -7,7 +7,7 @@ class Booking(Base):
     __tablename__ = "bookings"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(String, ForeignKey("users.id"), nullable=False, index=True)
+    user_id = Column(String(255), ForeignKey("users.id"), nullable=False, index=True)
 
     session_id = Column(Integer, ForeignKey("sessions.id"), nullable=False)
     row_number = Column(Integer, nullable=False)
