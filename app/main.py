@@ -1,8 +1,15 @@
 from fastapi import FastAPI
-from app.api.v1.endpoints import  booking, utils, auth, user, session, genre, content, actor, cinema_hall
+from app.api.v1.endpoints import booking, utils, auth, user, session, genre, content, actor, cinema_hall
 from fastapi.middleware.cors import CORSMiddleware
+from app.db.session import engine 
+from app.models.base import Base 
 
 app = FastAPI(title="MovieHub API", version="1.0.0")
+
+@app.on_event("startup")
+async def startup():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
 
 app.include_router(auth.router)
 app.include_router(user.router)
