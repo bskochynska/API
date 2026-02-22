@@ -24,7 +24,9 @@ async def seed_database(db: AsyncSession) -> bool:
                 hashed_password="admin_password_hash",
                 role="Admin",
                 is_superuser=True,
-                is_active=True
+                is_active=True,
+                first_name="Admin",  
+                last_name="Super"
             )
             db.add(user)
             await db.flush()
