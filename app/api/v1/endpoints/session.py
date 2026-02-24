@@ -10,7 +10,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 router = APIRouter(
     prefix="/api/v1/sessions",
     tags=["Session"],
-    dependencies=[Depends(oauth2_scheme)]
+    # dependencies=[Depends(oauth2_scheme)]
 )
 
 @router.get("/filter", response_model=list[SessionResponse])
