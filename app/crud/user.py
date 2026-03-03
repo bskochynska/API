@@ -4,12 +4,12 @@ from app.models.user import User
 from app.schemas.user import UserCreate, UserUpdate
 
 async def get_by_id(db: AsyncSession, user_id: int):
-    """Отримує користувача за його ідентифікатором."""
+    """Gets user by ID"""
     result = await db.execute(select(User).where(User.id == user_id))
     return result.scalar_one_or_none()
 
 async def check_exists(db: AsyncSession, user_id: int) -> bool:
-    """Перевіряє, чи існує користувач із вказаним ID через EXISTS."""
+    """Checks if user with ID exists"""
     try:
         stmt = select(exists().where(User.id == user_id))
         result = await db.execute(stmt)
@@ -19,12 +19,10 @@ async def check_exists(db: AsyncSession, user_id: int) -> bool:
 
 async def update(db: AsyncSession, db_obj: User, obj_in: UserUpdate):
     """
-    Оновлює існуючого користувача.
-    Використовуємо пряме присвоєння значень через словник, уникаючи getattr та hasattr.
+    Updates existing user
     """
     update_data = obj_in.model_dump(exclude_unset=True)
     try:
-        # Прямо перевіряємо ключі та оновлюємо поля
         if "username" in update_data:
             db_obj.username = update_data["username"]
         if "email" in update_data:
@@ -41,8 +39,7 @@ async def update(db: AsyncSession, db_obj: User, obj_in: UserUpdate):
 
 async def remove(db: AsyncSession, user_id: int):
     """
-    Видаляє користувача за його ID.
-    Саме цієї функції не бачив Pylint.
+    User removal
     """
     try:
         await db.execute(delete(User).where(User.id == user_id))
