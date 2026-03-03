@@ -1,22 +1,34 @@
 from pydantic import BaseModel
-from typing import Optional
 
 class ContentBase(BaseModel):
     title: str
-    description: Optional[str] = None
-    release_date: Optional[str] = None
+    description: str  
+    rating: float | None = None
+    age_rating: int
+    release_year: int
+    director_full_name: str
+    trailer_url: str | None = None
+    poster_url: str | None = None
+    banner_url: str | None = None
+    duration_minutes: int
 
 class ContentCreate(ContentBase):
     pass
 
 class ContentUpdate(BaseModel):
-    title: Optional[str] = None
-    description: Optional[str] = None
+    title: str | None = None
+    description: str | None = None
+    rating: float | None = None
+    age_rating: int | None = None
+    release_year: int | None = None
+    director_full_name: str | None = None
+    trailer_url: str | None = None
+    poster_url: str | None = None
+    banner_url: str | None = None
+    duration_minutes: int | None = None
 
 class ContentResponse(ContentBase):
     id: int
-    poster_url: Optional[str] = None
-    banner_url: Optional[str] = None
-
+    
     class Config:
         from_attributes = True
