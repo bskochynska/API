@@ -13,7 +13,7 @@ from app.models.booking import Booking
 from app.models.session import Session
 
 async def seed_database(db: AsyncSession) -> bool:
-    """Повне наповнення бази з гарантованим створенням користувача та контенту."""
+    """Inserts data into the database"""
     try:
         admin_email = "admin@moviehub.com"
         res_user = await db.execute(select(User).where(User.email == admin_email))
