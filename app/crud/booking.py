@@ -5,7 +5,7 @@ from app.schemas.booking import BookingFilterParams, BookingStatus, BookingCreat
 
 async def create(db: AsyncSession, obj_in: BookingCreate):
     """
-    Створює новий запис бронювання в базі даних.
+    Creates new boking
     """
     try:
         db_obj = Booking(
@@ -25,7 +25,7 @@ async def create(db: AsyncSession, obj_in: BookingCreate):
 
 async def get_filtered(db: AsyncSession, params: BookingFilterParams):
     """
-    Отримує список бронювань за 8 параметрами фільтрації.
+    Gets booking list
     """
     try:
         query = select(Booking)
@@ -64,18 +64,18 @@ async def get_filtered(db: AsyncSession, params: BookingFilterParams):
         return []
 
 async def get_by_id(db: AsyncSession, booking_id: int):
-    """Отримує бронювання за його унікальним ідентифікатором."""
+    """Gets booking by ID"""
     result = await db.execute(select(Booking).where(Booking.id == booking_id))
     return result.scalar_one_or_none()
 
 async def exists_booking(db: AsyncSession, booking_id: int) -> bool:
-    """Перевіряє існування бронювання."""
+    """Checks if booking exists"""
     stmt = select(exists().where(Booking.id == booking_id))
     result = await db.execute(stmt)
     return result.scalar() or False
 
 async def cancel(db: AsyncSession, booking_id: int):
-    """Скасовує бронювання через зміну статусу."""
+    """Cancels the booking"""
     try:
         db_obj = await get_by_id(db, booking_id)
         if db_obj:
@@ -88,7 +88,7 @@ async def cancel(db: AsyncSession, booking_id: int):
         return None
 
 async def is_seat_booked(db: AsyncSession, session_id: int, row: int, seat: int) -> bool:
-    """Перевіряє, чи зайняте місце."""
+    """Checks if the place is vacant"""
     stmt = select(exists().where(and_(
         Booking.session_id == session_id,
         Booking.row_number == row,
@@ -99,7 +99,7 @@ async def is_seat_booked(db: AsyncSession, session_id: int, row: int, seat: int)
     return result.scalar() or False
 
 async def remove(db: AsyncSession, booking_id: int):
-    """Фізично видаляє бронювання з бази даних (Hard Delete)."""
+    """Booking removal"""
     try:
         db_obj = await get_by_id(db, booking_id)
         if db_obj:
