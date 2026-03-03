@@ -19,7 +19,7 @@ async def filter_bookings(
     db: AsyncSession = Depends(get_db)
 ):
     """
-    Отримує список бронювань за 8 параметрами фільтрації.
+    Get bookings list
     """
     return await crud.get_filtered(db, params)
 
@@ -28,12 +28,12 @@ async def check_exists(
     id: Annotated[int, Path(..., description="Унікальний ідентифікатор бронювання")],
     db: AsyncSession = Depends(get_db)
 ):
-    """Перевіряє, чи існує бронювання з вказаним ID."""
+    """Checks if booking exists"""
     return await crud.exists_booking(db, id)
 
 @router.get("/", response_model=List[BookingResponse])
 async def get_all_admin(db: AsyncSession = Depends(get_db)):
-    """Отримує список усіх бронювань (тільки для адміністраторів)."""
+    """Gets bookings list(for admin-users only"""
     return await crud.get_filtered(db, BookingFilterParams(pageSize=100))
 
 @router.post("/", response_model=BookingResponse, status_code=status.HTTP_201_CREATED)
@@ -41,7 +41,7 @@ async def create_booking(
     obj_in: BookingCreate,
     db: AsyncSession = Depends(get_db)
 ):
-    """Створює нове бронювання з перевіркою на зайнятість місця."""
+    """Creates new booking"""
 
     is_booked = await crud.is_seat_booked(
         db,
@@ -63,15 +63,11 @@ async def get_booking(
     id: Annotated[int, Path(..., description="ID бронювання")],
     db: AsyncSession = Depends(get_db)
 ):
-    """Отримує детальну інформацію про конкретне бронювання."""
+    """Gets detailed info about booking"""
     res = await crud.get_by_id(db, id)
     if not res:
         raise HTTPException(status_code=404, detail="Booking not found")
     return res
-
-from fastapi import HTTPException, status
-# переконайтеся, що імпортували ваш crud
-# from app.crud import booking as crud_booking 
 
 @router.delete("/{id}", status_code=status.HTTP_200_OK)
 async def delete_booking(
@@ -95,7 +91,7 @@ async def cancel_booking(
     id: Annotated[int, Path(...)],
     db: AsyncSession = Depends(get_db)
 ):
-    """Скасовує бронювання, змінюючи його статус на Canceled."""
+    """Cancels booking"""
     res = await crud.cancel(db, id)
     if not res:
         raise HTTPException(status_code=404, detail="Booking not found or already canceled")
@@ -108,5 +104,5 @@ async def check_seat(
     seatNumber: int,
     db: AsyncSession = Depends(get_db)
 ):
-    """Перевіряє, чи зайняте конкретне місце на обраний сеанс."""
+    """Checks if the place is vacant"""
     return await crud.is_seat_booked(db, sessionId, rowNumber, seatNumber)
