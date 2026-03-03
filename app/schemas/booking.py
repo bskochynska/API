@@ -21,7 +21,6 @@ class BookingBase(BaseModel):
     user_id: str
 
 class BookingCreate(BookingBase):
-    """Схема для POST запиту."""
     pass
 
 class BookingFilterParams(BaseModel):
