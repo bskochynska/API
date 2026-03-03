@@ -4,7 +4,7 @@ from app.models.actor import Actor
 from app.schemas.actor import ActorFilterParams, ActorUpdate, ActorCreate
 
 async def get_all(db: AsyncSession) -> list:
-    """Повертає список усіх акторів."""
+    """Gets all actors"""
     try:
         res = await db.execute(select(Actor))
         return res.scalars().all()
@@ -12,7 +12,7 @@ async def get_all(db: AsyncSession) -> list:
         return []
 
 async def get_filtered(db: AsyncSession, params: ActorFilterParams) -> list:
-    """Фільтрує акторів за запитом та пагінацією."""
+    """Filter actors"""
     try:
         query = select(Actor)
         if params.SearchTerms:
@@ -32,18 +32,18 @@ async def get_filtered(db: AsyncSession, params: ActorFilterParams) -> list:
         return []
 
 async def get_actor(db: AsyncSession, actor_id: str):
-    """Отримує актора за UUID."""
+    """Gets the actor"""
     res = await db.execute(select(Actor).where(Actor.id == actor_id))
     return res.scalar_one_or_none()
 
 async def exists(db: AsyncSession, actor_id: str) -> bool:
-    """Перевіряє, чи існує актор у базі."""
+    """Checks if the actor exists in database"""
     res = await db.execute(select(Actor).where(Actor.id == actor_id))
     return res.scalar_one_or_none() is not None
 
 
 async def create(db: AsyncSession, obj_in: ActorCreate) -> Actor:
-    """Створює нового актора."""
+    """Creates new actor"""
     try:
         new_actor = Actor(**obj_in.model_dump())
         db.add(new_actor)
@@ -55,7 +55,7 @@ async def create(db: AsyncSession, obj_in: ActorCreate) -> Actor:
         return None
 
 async def update(db: AsyncSession, db_obj: Actor, obj_in: ActorUpdate):
-    """Оновлює дані існуючого актора."""
+    """Updated existing actor"""
     data = obj_in.model_dump(exclude_unset=True)
     try:
         if "first_name" in data: db_obj.first_name = data["first_name"]
@@ -70,7 +70,7 @@ async def update(db: AsyncSession, db_obj: Actor, obj_in: ActorUpdate):
         return None
 
 async def remove(db: AsyncSession, actor_id: str):
-    """Видаляє актора за його UUID."""
+    """Actor removal"""
     try:
         await db.execute(delete(Actor).where(Actor.id == actor_id))
         await db.commit()
