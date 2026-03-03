@@ -4,8 +4,7 @@ from app.models.user import User
 
 async def authenticate_user(db: AsyncSession, email: str, password: str):
     """
-    Перевіряє облікові дані користувача.
-    Використовуємо прямий пошук замість getattr.
+    Checks user data
     """
     try:
         result = await db.execute(select(User).where(User.email == email))
