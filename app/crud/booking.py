@@ -97,3 +97,15 @@ async def is_seat_booked(db: AsyncSession, session_id: int, row: int, seat: int)
     )))
     result = await db.execute(stmt)
     return result.scalar() or False
+
+async def remove(db: AsyncSession, booking_id: int):
+    """Фізично видаляє бронювання з бази даних (Hard Delete)."""
+    try:
+        db_obj = await get_by_id(db, booking_id)
+        if db_obj:
+            await db.delete(db_obj)
+            await db.commit()     
+        return db_obj
+    except Exception:
+        await db.rollback()
+        return None
