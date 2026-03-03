@@ -69,13 +69,26 @@ async def get_booking(
         raise HTTPException(status_code=404, detail="Booking not found")
     return res
 
-@router.delete("/{id}")
+from fastapi import HTTPException, status
+# переконайтеся, що імпортували ваш crud
+# from app.crud import booking as crud_booking 
+
+@router.delete("/{id}", status_code=status.HTTP_200_OK)
 async def delete_booking(
     id: Annotated[int, Path(...)],
     db: AsyncSession = Depends(get_db)
 ):
-    """Видаляє бронювання за його ідентифікатором."""
-    return {"status": "deleted"}
+    deleted_booking = await crud.remove(db, booking_id=id)
+    if not deleted_booking:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Бронювання не знайдено"
+        )
+        
+    return {
+        "status": "success", 
+        "message": f"Бронювання з ID {id} остаточно видалено з бази"
+    }
 
 @router.put("/{id}/cancel", response_model=BookingResponse)
 async def cancel_booking(
