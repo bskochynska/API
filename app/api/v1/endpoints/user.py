@@ -18,9 +18,8 @@ router = APIRouter(
 
 @router.post("/admins/register", response_model=UserResponse)
 async def register_admin(obj_in: UserCreate, db: AsyncSession = Depends(get_db)):
-    """Реєстрація адміна з автоматичним заповненням технічних полів."""
+    """Admin registration"""
     try:
-        # Перевірка на дублікат імейлу
         res = await db.execute(select(User).where(User.email == obj_in.email))
         if res.scalar_one_or_none():
             raise HTTPException(status.status_code == 400, detail="Користувач з таким email вже існує")
@@ -47,15 +46,11 @@ async def register_admin(obj_in: UserCreate, db: AsyncSession = Depends(get_db))
 
 @router.post("/customer/register", response_model=UserResponse)
 async def register_customer(obj_in: UserCreate, db: AsyncSession = Depends(get_db)):
-    """Реєстрація звичайного користувача з виправленими полями моделі."""
+    """Regular user registration"""
     try:
-        # 1. Перевірка на унікальність email
         res = await db.execute(select(User).where(User.email == obj_in.email))
         if res.scalar_one_or_none():
             raise HTTPException(status_code=400, detail="User with this email already exists")
-
-        # 2. Створення об'єкта User (використовуємо існуючі в моделі поля)
-        # УВАГА: Замінив full_name на first_name/last_name, як у вашій базі
         new_user = User(
             email=obj_in.email,
             username=obj_in.email,
@@ -74,7 +69,6 @@ async def register_customer(obj_in: UserCreate, db: AsyncSession = Depends(get_d
 
     except Exception as e:
         await db.rollback()
-        # Тепер ви побачите реальну помилку у вкладці Response!
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 @router.get("/my-info", response_model=UserInfoResponse, dependencies=[protected])
@@ -85,11 +79,11 @@ async def get_my_info(db: AsyncSession = Depends(get_db)):
 
 @router.get("/{id}/exists")
 async def user_exists(id: int, db: AsyncSession = Depends(get_db)):
-    """Перевіряє існування користувача."""
+    """Checks if user exists"""
     return await crud.check_exists(db, id)
 
 @router.delete("/{id}", dependencies=[protected])
 async def delete_user(id: int, db: AsyncSession = Depends(get_db)):
-    """Видалення користувача. Потребує токен."""
+    """User removal"""
     await crud.remove(db, id)
     return {"status": "deleted"}
