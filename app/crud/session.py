@@ -9,7 +9,7 @@ async def get_all(db: AsyncSession):
     return result.scalars().all()
 
 async def get_with_content(db: AsyncSession):
-    """Отримує сесії разом із деталями контенту (JOIN)."""
+    """Gets all sessions"""
     result = await db.execute(select(Session).options(joinedload(Session.content)))
     return result.scalars().all()
 
