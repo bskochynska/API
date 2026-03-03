@@ -17,7 +17,6 @@ class ActorFilterParams(BaseModel):
     ContentId: Optional[int] = Field(None, description="Фільтр за ID контенту, у якому знімався актор.")
     PageIndex: int = Field(0, ge=0, description="Індекс сторінки для повернення.")
 
-# Ваші існуючі схеми
 class ActorBase(BaseModel):
     first_name: str
     last_name: str
