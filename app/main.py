@@ -6,9 +6,14 @@ from app.db.base import Base
 
 app = FastAPI(title="MovieHub API", version="1.0.0")
 
+origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,    =
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -21,7 +26,7 @@ async def startup():
         
 app.include_router(auth.router)
 app.include_router(user.router)
-app.include_router(session.router) # Тепер шлях буде /api/v1/sessions/1, а не /api/v1/sessions/api/v1/sessions/1
+app.include_router(session.router) 
 app.include_router(content.router)
 app.include_router(actor.router)
 app.include_router(genre.router)
