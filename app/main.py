@@ -9,6 +9,7 @@ app = FastAPI(title="MovieHub API", version="1.0.0")
 origins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "https://cinema-website-oop-project-ei3nouf62-bskochynskas-projects.vercel.app",
 ]
 
 app.add_middleware(
